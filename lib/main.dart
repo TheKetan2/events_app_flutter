@@ -1,3 +1,4 @@
+import 'package:events_app_flutter/screens/event_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -25,14 +26,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.orange,
         // visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Scaffold(
-        body: Center(
-          child: RaisedButton(
-            child: Text("Connect!"),
-            onPressed: testData,
-          ),
-        ),
-      ),
+      home: EventScreen(),
     );
   }
 }
