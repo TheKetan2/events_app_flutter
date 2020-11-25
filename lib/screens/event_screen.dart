@@ -1,13 +1,19 @@
 import 'package:events_app_flutter/screens/login_screen.dart';
 import 'package:events_app_flutter/shared/authentication.dart';
+import 'package:events_app_flutter/shared/firestore_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:events_app_flutter/models/event_details.dart';
 
 class EventScreen extends StatelessWidget {
+  final String uid;
   final Authentication auth = Authentication();
+
+  EventScreen({Key key, this.uid}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
+    print("from event screen $uid");
     return Scaffold(
       appBar: AppBar(
         title: Text("Event"),
@@ -27,12 +33,18 @@ class EventScreen extends StatelessWidget {
           )
         ],
       ),
-      body: EventList(),
+      body: EventList(
+        uid: uid,
+      ),
     );
   }
 }
 
 class EventList extends StatefulWidget {
+  final String uid;
+
+  const EventList({Key key, this.uid}) : super(key: key);
+
   @override
   _EventListState createState() => _EventListState();
 }
@@ -66,6 +78,10 @@ class _EventListState extends State<EventList> {
     super.initState();
   }
 
+  void toggleFavorite(EventDetail ed) {
+    FireStoreHelper.addFavorite(ed, widget.uid);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -76,6 +92,15 @@ class _EventListState extends State<EventList> {
         return ListTile(
           title: Text(details[position].description),
           subtitle: Text(sub),
+          trailing: IconButton(
+            icon: Icon(
+              Icons.star,
+              color: Colors.grey,
+            ),
+            onPressed: () {
+              toggleFavorite(details[position]);
+            },
+          ),
         );
       },
     );

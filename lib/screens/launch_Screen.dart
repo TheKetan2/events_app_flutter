@@ -20,7 +20,9 @@ class _LaunchScreenState extends State<LaunchScreen> {
       MaterialPageRoute route;
       if (user != null) {
         route = MaterialPageRoute(
-          builder: (context) => EventScreen(),
+          builder: (context) => EventScreen(
+            uid: user.uid,
+          ),
         );
       } else {
         route = MaterialPageRoute(
