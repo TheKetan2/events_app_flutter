@@ -1,4 +1,5 @@
 import 'package:events_app_flutter/screens/event_screen.dart';
+import 'package:events_app_flutter/screens/launch_Screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -21,12 +22,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Events',
       theme: ThemeData(
         primarySwatch: Colors.orange,
         // visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: EventScreen(),
+      home: LaunchScreen(),
     );
   }
 }

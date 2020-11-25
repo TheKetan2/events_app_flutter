@@ -1,13 +1,31 @@
+import 'package:events_app_flutter/screens/login_screen.dart';
+import 'package:events_app_flutter/shared/authentication.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:events_app_flutter/models/event_details.dart';
 
 class EventScreen extends StatelessWidget {
+  final Authentication auth = Authentication();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Event"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () {
+              auth.logOut().then((result) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LoginScreen(),
+                  ),
+                );
+              });
+            },
+          )
+        ],
       ),
       body: EventList(),
     );
