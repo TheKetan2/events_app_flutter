@@ -1,3 +1,4 @@
+import 'package:events_app_flutter/models/favorite.dart';
 import 'package:events_app_flutter/screens/login_screen.dart';
 import 'package:events_app_flutter/shared/authentication.dart';
 import 'package:events_app_flutter/shared/firestore_helper.dart';
@@ -52,6 +53,7 @@ class EventList extends StatefulWidget {
 class _EventListState extends State<EventList> {
   final Firestore db = Firestore.instance;
   List<EventDetail> details = [];
+  List<Favorite> favorites = [];
 
   Future<List<EventDetail>> getDetailsList() async {
     var data = await db.collection("events_details").getDocuments();
@@ -74,19 +76,51 @@ class _EventListState extends State<EventList> {
       getDetailsList().then((data) => setState(() {
             details = data;
           }));
+      FireStoreHelper.getUserFavorites(widget.uid).then((data) => {
+            setState(() {
+              favorites = data;
+            })
+          });
     }
+
+    // FireStoreHelper.
     super.initState();
   }
 
-  void toggleFavorite(EventDetail ed) {
-    FireStoreHelper.addFavorite(ed, widget.uid);
+  bool isUserFavorite(String eventId) {
+    Favorite favorite = favorites.firstWhere(
+        (element) => element.eventId == eventId,
+        orElse: () => null);
+    if (favorite == null)
+      return false;
+    else
+      return true;
   }
+
+  void toggleFavorite(EventDetail ed) async{
+ if (isUserFavorite(ed.id)) {
+ Favorite favourite = favorites
+ .firstWhere((Favorite f) => (f.eventId == ed.id));
+ String favId = favourite.eventId;
+ await FireStoreHelper.deleteFavorite(favId);
+ }
+ else {
+ await FireStoreHelper.addFavorite(ed, widget.uid);
+ }
+ List<Favorite> updatedFavourites =
+ await FireStoreHelper.getUserFavorites(widget.uid);
+ setState(() {
+ favorites = updatedFavourites;
+ });
+ }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: details != null ? details.length : 0,
       itemBuilder: (context, position) {
+        Color starColor =
+            isUserFavorite(details[position].id) ? Colors.amber : Colors.grey;
         String sub =
             'Date: ${details[position].date} - Start: ${details[position].startTime} - End: ${details[position].endTime}';
         return ListTile(
@@ -95,7 +129,7 @@ class _EventListState extends State<EventList> {
           trailing: IconButton(
             icon: Icon(
               Icons.star,
-              color: Colors.grey,
+              color: starColor,
             ),
             onPressed: () {
               toggleFavorite(details[position]);

@@ -25,4 +25,16 @@ class FireStoreHelper {
   // static Future<List<Favorite>> getUserFavorites()async {
 //NOTE: page number 278
   // }
+  static Future<List<Favorite>> getUserFavorites(String uid) async {
+    List<Favorite> favs;
+    QuerySnapshot docs = await db
+        .collection("favorites")
+        .where("userId", isEqualTo: uid)
+        .getDocuments();
+    if (docs != null) {
+      favs = docs.documents.map((data) => Favorite.map(data)).toList();
+    }
+    return favs;
+  }
+
 }

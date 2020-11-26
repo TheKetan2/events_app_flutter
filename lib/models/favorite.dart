@@ -11,6 +11,7 @@ class Favorite {
     this._eventId = document.data['eventId'];
     this._userId = document.data['userId'];
   }
+
   Map<String, dynamic> toMap() {
     Map map = Map<String, dynamic>();
     if (_id != null) {
@@ -20,4 +21,6 @@ class Favorite {
     map['userId'] = _userId;
     return map;
   }
+  
+  String get eventId => _eventId;
 }
